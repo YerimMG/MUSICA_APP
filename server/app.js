@@ -9,8 +9,10 @@ const mongoose      = require('mongoose');
 const cors          = require('cors')
 const logger        = require('morgan');
 const path          = require('path');
-
 const app           = express();
+const PORT          = process.env.PORT
+
+
 
 //ROUTES
 const tester = require('./Routes/Tester.js')
@@ -46,16 +48,10 @@ app.use((req, res, next) => {
   next();
 });
 
-
-
-
 //Routes
 app.use('/', tester)
 
 //SERVER
-const PORT = process.env.PORT
-
-
 app.listen(PORT, () => {
   console.log(`server on port: ${PORT}`)
 })

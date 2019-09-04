@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get('/tester', (req, res) => {
   const numer = 123
-  res.json('Hola desde API')
+  res.json('Listo perros!!')
 })
 
 module.exports = router;
