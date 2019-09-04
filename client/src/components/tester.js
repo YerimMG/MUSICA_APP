@@ -13,6 +13,7 @@ useEffect(() => {
       setTester(res.data)
       }
       url()
+      console.log("spoty")
 
 });
 
