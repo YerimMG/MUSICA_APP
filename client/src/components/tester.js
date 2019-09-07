@@ -13,15 +13,21 @@ useEffect(() => {
       setTester(res.data)
       }
       url()
-      console.log("spoty")
 
 });
+
+const hola = () => {
+  console.log("hola")
+}
 
 
   return (
     <div>
       <h1>Hola desde Tester</h1>
       <p>Que dice el API: {tester}</p>
+      <a type="button" href='http://localhost:3000/login' onClick={()=> (hola())}>Spoty Login</a>
+      
+
     </div>
   )
 }
