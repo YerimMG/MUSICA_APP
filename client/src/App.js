@@ -9,6 +9,10 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 //COMPONENTES
 import Tester from './components/tester';
 import SuccesFul from './components/SuccesRoute'
+let params = new URLSearchParams(window.location.search);
+let access_token = params.get('access_token')
+let refresh_token = params.get('refresh_token')
+
 
 
 function App() {

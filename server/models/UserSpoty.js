@@ -24,7 +24,10 @@ const SpotyInfoUser = new Schema({
     }],
     product:          String,
     type: String,
-    uri:  String    
+    uri:  String,
+    access_token:   String,
+    refresh_token:  String, 
+    
 },{
     timestamps: { createdAt: "created_at", updatedAt: "updated_at" }
 });

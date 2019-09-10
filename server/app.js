@@ -62,7 +62,7 @@ app.use((req, res, next) => {
 
 //SpotifyStrategy
 
-
+//Genera el Token, creo
 var generateRandomString = function(length) {
   var text = '';
   var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -74,7 +74,9 @@ var generateRandomString = function(length) {
 
 };
 
+
 var stateKey = 'spotify_auth_state';
+
 
 app.get('/login', function(req, res) {
 
@@ -82,7 +84,7 @@ app.get('/login', function(req, res) {
   res.cookie(stateKey, state);
 
   // your application requests authorization
-  var scope = 'user-read-private user-read-email';
+  var scope = 'user-read-private user-read-email user-library-read user-top-read user-read-recently-played user-follow-read';
   res.redirect('https://accounts.spotify.com/authorize?' +
     querystring.stringify({
       response_type: 'code',
@@ -133,31 +135,36 @@ app.get('/callback/', function(req, res) {
             refresh_token = body.refresh_token;
 
         var options = {
-          url: 'https://api.spotify.com/v1/me',
+          url: 'https://api.spotify.com/v1/me/following?type=artist',
           headers: { 'Authorization': 'Bearer ' + access_token },
-          json: true
+          json: true,
+
         };
-        // use the access token to access the Spotify Web API
+
+        console.log(options)
         request.get(options, function(error, response, body) {
         console.log(body);
-        const NewUser = new UserSpoty(body)
+        // console.log(access_token)
+        // console.log(refresh_token)
+        // const NewUser = new UserSpoty(body)
+        // NewUser.access_token  = access_token,
+        // NewUser.refresh_token = refresh_token
 
-        NewUser.save()
-        .then(resp => {
-          res.json(resp)
-        })
-        .catch(err => console.log(err))
+        // NewUser.save()
+        // .then(resp => {
+        //   res.json(resp)
+        //   console.log(res)
+        // })
+        // .catch(err => console.log(err))
 
         });
-
-        // we can also pass the token to the browser to make requests from there
-        res.redirect('/#' +
+        res.redirect('http://localhost:3001?' +
           querystring.stringify({
             access_token: access_token,
             refresh_token: refresh_token
           }));
       } else {
-        res.redirect('/#' +
+        res.redirect('http://localhost:3001?' +
           querystring.stringify({
             error: 'invalid_token'
           }));
@@ -185,7 +192,7 @@ app.get('/refresh_token', function(req, res) {
     json: true
   };
 
-  request.post(authOptions, function(error, response, body) {
+  request.post(authOptions, function(error, response, body) { 
     if (!error && response.statusCode === 200) {
       var access_token = body.access_token;
       res.send({
