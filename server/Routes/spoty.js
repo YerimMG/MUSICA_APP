@@ -89,11 +89,11 @@ router.get('/callback/', function(req, res) {
 
       if (!error && response.statusCode === 200) {
 
-        var access_token = body.access_token,
+        const access_token = body.access_token,
             refresh_token = body.refresh_token;
 
         //GET CURRENT USER'S PROFILE
-        var userInfo = {
+        const userInfo = {
           url: 'https://api.spotify.com/v1/me',
           headers: { 'Authorization': 'Bearer ' + access_token },
           json: true,
@@ -101,95 +101,87 @@ router.get('/callback/', function(req, res) {
         };
 
         request.get(userInfo, function(error, response, body) {
-        console.log(body.id);
 
         const NewUser = new UserSpoty(body)
-        console.log( NewUser.id )
+        NewUser.spotyId = body.id
 
-        const id = NewUser.id
+        const spotyId = NewUser.spotyId
+        UserSpoty.findOne({spotyId})
+          .then(res => {
+            if( res !== null){
+              UserSpoty.findOneAndUpdate({ _id: res._id }, {access_token  : access_token, refresh_token : refresh_token})
 
-        UserSpoty.find({id})
-          .then(() => {
-            if( id == body.id){
-              console.log('okay')
             } else {
-              console.log('not okay')
+              NewUser.access_token  = access_token,
+              NewUser.refresh_token = refresh_token
+
+              NewUser.save()
+              .then(resp => {
+                res.json(resp)
+              })
+              .catch(err => console.log(err))             
             }
           })
-        
-
-        NewUser.access_token  = access_token,
-        NewUser.refresh_token = refresh_token
-
-        NewUser.save()
-        .then(resp => {
-          res.json(resp)
-          // console.log(res)
-        })
-        .catch(err => console.log(err))
-
         });
 
 
       //GET A USER'S TOP ARTISTS 
-        var userTopArtists = {
-          url: 'https://api.spotify.com/v1/me/top/artists?limit=50&offset=0',
-          headers: { 'Authorization': 'Bearer ' + access_token },
-          json: true,
+      //   var userTopArtists = {
+      //     url: 'https://api.spotify.com/v1/me/top/artists?limit=50&offset=0',
+      //     headers: { 'Authorization': 'Bearer ' + access_token },
+      //     json: true,
 
-        };
-        request.get(userTopArtists, function(error, response, body) {
-        // console.log(body);
-        const newUserArtists = new userArtists(body)
+      //   };
+      //   request.get(userTopArtists, function(error, response, body) {
+      //   const newUserArtists = new userArtists(body)
+      //   newUserArtists.spotyId = 
+    
 
-        newUserArtists.save()
-        .then(resp => {
-          res.json(resp)
-          // console.log(res)
-        })
-        .catch(err => console.log(err))
-      })
+
+      //   newUserArtists.save()
+      //   .then(resp => {
+      //     res.json(resp)
+      //   })
+      //   .catch(err => console.log(err))
+      // })
 
 
       //GET A USER'S TOP TRACKS 
-        var userTopTracks = {
-          url: 'https://api.spotify.com/v1/me/top/tracks?limit=50&offset=0',
-          headers: { 'Authorization': 'Bearer ' + access_token },
-          json: true,
+      //   var userTopTracks = {
+      //     url: 'https://api.spotify.com/v1/me/top/tracks?limit=50&offset=0',
+      //     headers: { 'Authorization': 'Bearer ' + access_token },
+      //     json: true,
 
-        };
+      //   };
 
-        request.get(userTopTracks, function(error, response, body) {
-        // console.log(body);
+      //   request.get(userTopTracks, function(error, response, body) {
 
-        const userTopTracks = new userTracks(body)
+      //   const userTopTracks = new userTracks(body)
 
-          userTopTracks.save()
-          .then(resp => {
-            res.json(resp)
-            console.log(res)
-          })
-          .catch(err => console.log(err))
-      })
+      //     userTopTracks.save()
+      //     .then(resp => {
+      //       res.json(resp)
+      //       console.log(res)
+      //     })
+      //     .catch(err => console.log(err))
+      // })
       
       //Get User's Followed Artists
-        var userFollowed = {
-          url: 'https://api.spotify.com/v1/me/following?type=artist',
-          headers: { 'Authorization': 'Bearer ' + access_token },
-          json: true,
+      //   var userFollowed = {
+      //     url: 'https://api.spotify.com/v1/me/following?type=artist',
+      //     headers: { 'Authorization': 'Bearer ' + access_token },
+      //     json: true,
 
-        };
+      //   };
 
-        request.get(userFollowed, function(error, response, body) {
-        // console.log(body);
-        const newUserFollowed = new FollowedArtsist(body)
-        newUserFollowed.save()
-          .then(resp => {
-            res.json(resp)
-            console.log(res)
-          })
-          .catch(err => console.log(err))
-      })
+      //   request.get(userFollowed, function(error, response, body) {
+      //   const newUserFollowed = new FollowedArtsist(body)
+      //   newUserFollowed.save()
+      //     .then(resp => {
+      //       res.json(resp)
+      //     })
+      //     .catch(err => console.log(err))
+      // })
 
         res.redirect('http://localhost:3001?' +
           querystring.stringify({

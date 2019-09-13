@@ -24,7 +24,8 @@ const userArtists = new Schema({
   }],
   total : Number,
   limit : Number,
-  href :  String
+  href :  String,
+  spotyId: String
   
   },{
       timestamps: { createdAt: "created_at", updatedAt: "updated_at" }
