@@ -7,18 +7,13 @@ const express = require('express');
 const router = express.Router();
 const querystring = require('querystring');
 const request     = require('request')
-// const SpotifyStrategy = require('passport-spotify').Strategy;
-// const passport        = require('passport')
-// const consolidate     = require('consolidate');
-// const swig            = require('swig');
-// const session         = require('express-session');
 
 
 //BBD 
 const UserSpoty  = require('../models/UserSpoty')
 const userTracks = require('../models/userTracks')
 const userArtists = require('../models/userArtists')
-const FollowedArtsist = require('../models/FollowedArtists')
+// const FollowedArtsist = require('../models/FollowedArtists')
 
 
 //Genera el Token
@@ -100,71 +95,109 @@ router.get('/callback/', function(req, res) {
 
         };
 
-        request.get(userInfo, function(error, response, body) {
+        request.get(userInfo,function(error, response, body) {
 
-        const NewUser = new UserSpoty(body)
-        NewUser.spotyId = body.id
+          const newUser = new UserSpoty(body)
+          newUser.spotyId = body.id    
+          const spotyId = newUser.spotyId
 
-        const spotyId = NewUser.spotyId
-        UserSpoty.findOne({spotyId})
-          .then(res => {
-            if( res !== null){
-              UserSpoty.findOneAndUpdate({ _id: res._id }, {access_token  : access_token, refresh_token : refresh_token})
+          UserSpoty.findOne({spotyId})
+            .then(res => {
+              //Si la respuesta es diferente a nulll, solo actualiza el token
+              if( res !== null){
+                UserSpoty.findOneAndUpdate({ _id: res._id }, { access_token  : access_token, refresh_token : refresh_token })
+                .then(res => {
+                  res.json(res)
+                })
+                .catch(err => console.log(err)) 
+                //Si la respuesta en null, crea el usuario y genera un id a todos los modelos relacionados con la informacion del usuario.
+              } else {
+                //Genera el modelo con la informacion del usuario
+                newUser.access_token  = access_token,
+                newUser.refresh_token = refresh_token
 
-            } else {
-              NewUser.access_token  = access_token,
-              NewUser.refresh_token = refresh_token
+                newUser.save()
+                .then(resp => { 
+                  resp.json(resp)
+                })
+                .catch(err => console.log(err)) 
 
-              NewUser.save()
-              .then(resp => {
-                res.json(resp)
-              })
-              .catch(err => console.log(err))             
-            }
-          })
+                // //Genera un id a las listas de tracks de los usuarios
+                const newIdTrack   = new userTracks( body )
+                newIdTrack.spotyId = body.id
+                newIdTrack.display_name = body.display_name
+
+                newIdTrack.save()
+                .then(resp => {
+                  res.json(resp)
+                })
+                .catch(err => console.log(err)) 
+
+                // //Genera un Id a la lista de artistas de los usuarios
+                const idArtisit = new userArtists( body )
+                idArtisit.spotyId = body.id
+                idArtisit.display_name = body.display_name
+
+                idArtisit.save()
+                .then(resp => {
+                  res.json(resp)
+                })
+                .catch(err => console.log(err)) 
+
+                // //Genera un id a los artistas que sigue el usuario.
+                // const idFollow = new FollowedArtsist(body)
+                // console.log(body.id, body.display_name)
+                // idFollow.spotyId = body.id
+                // idFollow.display_name = body.display_name
+
+                // idFollow.save()
+                // .then(resp => {
+                //   res.json(resp)
+                // })
+                // .catch(err => console.log(err)) 
+
+              }
+            })
         });
 
 
       //GET A USER'S TOP ARTISTS 
-      //   var userTopArtists = {
-      //     url: 'https://api.spotify.com/v1/me/top/artists?limit=50&offset=0',
-      //     headers: { 'Authorization': 'Bearer ' + access_token },
-      //     json: true,
+        var userTopArtists = {
+          url: 'https://api.spotify.com/v1/me/top/artists?limit=50&offset=0',
+          headers: { 'Authorization': 'Bearer ' + access_token },
+          json: true,
 
-      //   };
-      //   request.get(userTopArtists, function(error, response, body) {
-      //   const newUserArtists = new userArtists(body)
-      //   newUserArtists.spotyId = 
-    
-
-
-      //   newUserArtists.save()
-      //   .then(resp => {
-      //     res.json(resp)
-      //   })
-      //   .catch(err => console.log(err))
-      // })
+        };
+        request.get(userTopArtists, function(error, response, body) {
+           UserSpoty.find({access_token: access_token})
+           .then(res => {
+              const {display_name} = res[0]
+              userArtists.findOneAndUpdate({ display_name: display_name}, {items : body.items, 
+                  total : body.total, href : body.href })
+                  .then(resp => res.status(200).json(resp))
+                  .catch(err => console.log(err))
+          })
+      })
 
 
       //GET A USER'S TOP TRACKS 
-      //   var userTopTracks = {
-      //     url: 'https://api.spotify.com/v1/me/top/tracks?limit=50&offset=0',
-      //     headers: { 'Authorization': 'Bearer ' + access_token },
-      //     json: true,
+        var userTopTracks = {
+          url: 'https://api.spotify.com/v1/me/top/tracks?limit=50&offset=0',
+          headers: { 'Authorization': 'Bearer ' + access_token },
+          json: true,
 
-      //   };
-
-      //   request.get(userTopTracks, function(error, response, body) {
-
-      //   const userTopTracks = new userTracks(body)
-
-      //     userTopTracks.save()
-      //     .then(resp => {
-      //       res.json(resp)
-      //       console.log(res)
-      //     })
-      //     .catch(err => console.log(err))
-      // })
+        };
+        request.get(userTopTracks, function(error, response, body) {
+          
+           UserSpoty.find({access_token: access_token})
+           .then(res => { 
+              const {display_name} = res[0]
+              userTracks.findOneAndUpdate({ display_name: display_name }, { items: body.items , 
+                total : body.total, href : body.href })
+              .then(resp => res.status(200).json(resp))
+              .catch(err => console.log(err))
+          })
+     })
       
       //Get User's Followed Artists
       //   var userFollowed = {
@@ -183,11 +216,7 @@ router.get('/callback/', function(req, res) {
       //     .catch(err => console.log(err))
       // })
 
-        res.redirect('http://localhost:3001?' +
-          querystring.stringify({
-            access_token: access_token,
-            refresh_token: refresh_token
-          }));
+        res.redirect('http://localhost:3001/secces');
       } else {
         res.redirect('http://localhost:3001?' +
           querystring.stringify({

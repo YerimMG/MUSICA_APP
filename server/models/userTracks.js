@@ -70,9 +70,11 @@ const userTracks = new Schema({
            }
         ],
         total: Number,
+        spotyId : String,
         // limit: Number,
         // offset: Number,
         href: String, 
+        display_name: String
         // previous: Boolean,
         // next: String
       

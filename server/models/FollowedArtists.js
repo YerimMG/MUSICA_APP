@@ -25,7 +25,9 @@ const FollowedArtists = new Schema({
       }
     ],
     total: Number,
-    href: String
+    href: String,
+    display_name: String,
+    spotyId: String
   }
     
 },{
