@@ -15,8 +15,9 @@ const PORT          = process.env.PORT
 
 
 //ROUTES
-const tester     = require('./Routes/Tester.js')
+const Home     = require('./Routes/Home')
 const SpotyLogin = require('./Routes/spoty')
+const info = require('./Routes/info')
 
 // CONNECTION TO MONGO 
 const name = "MUSICAPP"
@@ -49,8 +50,9 @@ app.use((req, res, next) => {
 });
 
 //ROUTES
-app.use('/', tester)
+app.use('/home', Home)
 app.use('/', SpotyLogin)
+app.use('/info', info)
 
 
 //SERVER

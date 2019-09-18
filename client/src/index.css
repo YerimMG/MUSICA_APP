@@ -1,13 +1,49 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+  font-family: 'Roboto Condensed', sans-serif, "Segoe UI", "Roboto", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+/*--------------------------------
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+BOTONES DE SPOTY   
+
+---------------------------------*/
+.spotyButton {
+	background-color:#1db954;
+	-moz-border-radius:42px;
+	-webkit-border-radius:42px;
+	border-radius:42px;
+	cursor:pointer;
+	color:#ffffff;
+	font-size:17px;
+	font-weight:bold;
+	padding:15px 47px;
+  text-decoration:none;
+  margin: 10px;
+}
+.spotyButton:hover {
+	background-color: #1ed760;
+}
+.spotyButton:active {
+	top:1px;
+}
+/*--------------------------------
+POSICION DE LOS BOTONES DE SPOTY   
+---------------------------------*/
+.spotyButtons{
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-content: flex-start;
+	align-items: center;
+}
+
+.spotyButton{
+	order: 0;
+	flex: 0 1 auto;
+	align-self: auto;
 }

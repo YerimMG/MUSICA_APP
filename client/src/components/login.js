@@ -23,11 +23,13 @@ const hola = () => {
 
   return (
     <div>
-      <h1>Hola desde Tester</h1>
+      <h1>Hola desde login</h1>
       <p>Que dice el API: {tester}</p>
-      <a type="button" href='http://localhost:3000/login' onClick={()=> (hola())}>Spoty Login</a>
       
-
+      <containter className='spotyButtons'>
+      <a type="button" href="http://localhost:3000/login" className="spotyButton">INICIAR SECION CON SPOTIFY</a>
+      <a type="button" href="http://localhost:3000/login" className="spotyButton">REGÍSTRATE CON SPOTIFY</a>
+      </containter>
     </div>
   )
 }

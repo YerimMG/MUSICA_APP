@@ -216,7 +216,7 @@ router.get('/callback/', function(req, res) {
       //     .catch(err => console.log(err))
       // })
 
-        res.redirect('http://localhost:3001/secces');
+        res.redirect('http://localhost:3001/Home');
       } else {
         res.redirect('http://localhost:3001?' +
           querystring.stringify({
