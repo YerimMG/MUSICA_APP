@@ -3,7 +3,7 @@ const router = express.Router();
 
 //Ruta de prueba
 
-router.get('/tester', (req, res) => {
+router.get('/', (req, res) => {
   const numer = 123
   res.json('Listo perros!!')
 })

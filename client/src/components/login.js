@@ -8,7 +8,7 @@ const [tester, setTester] = useState('hola')
 useEffect(() => {
       //Consultar API
       const url = async () => {
-      const res = await axios.get( 'http://localhost:3000/tester')
+      const res = await axios.get( 'http://localhost:3000/home')
       //Actualiza el State
       setTester(res.data)
       }
@@ -27,7 +27,7 @@ const hola = () => {
       <p>Que dice el API: {tester}</p>
       
       <containter className='spotyButtons'>
-      <a type="button" href="http://localhost:3000/login" className="spotyButton">INICIAR SECION CON SPOTIFY</a>
+      <a type="button" href="http://localhost:3000/login" className="spotyButton">INICIAR SESIÓN CON SPOTIFY</a>
       <a type="button" href="http://localhost:3000/login" className="spotyButton">REGÍSTRATE CON SPOTIFY</a>
       </containter>
     </div>

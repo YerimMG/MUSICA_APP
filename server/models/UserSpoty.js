@@ -16,7 +16,7 @@ const SpotyInfoUser = new Schema({
       total:          Number
     },
     href:             String,
-    spotyId:               String,
+    spotyId:          String,
     images:[{
       height:         Boolean,
       url:            String, 

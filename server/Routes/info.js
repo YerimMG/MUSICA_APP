@@ -12,10 +12,10 @@ router.get('/', ( req,res,next ) => {
 })
 
 //GET ALL THE USER INFO
-router.get('/:id', (req, res, next) => {
-  const { id } = req.params
-  //jordymcrgd76
-  spotyUser.find({ spotyId: id })
+router.get('/:display_name', (req, res, next) => {
+  const { display_name } = req.params
+  //Jordy Bellamy
+  spotyUser.find({ display_name: display_name })
     .then(respuesta => res.json( respuesta ))
     .catch(err => res.json( err ))
 })
@@ -23,10 +23,10 @@ router.get('/:id', (req, res, next) => {
 
 //GET ALL THE USER ARTIST INFO (NAME AND IMG)
 
-router.get('/:id/Artists', (req, res, next) => {
-  const { id } = req.params
+router.get('/:display_name/Artists', (req, res, next) => {
+  const { display_name } = req.params
 
-  spotyUserArtists.find({ spotyId: id })
+  spotyUserArtists.find({ display_name: display_name })
     .then(Artists =>{ 
       res.json(Artists[0].items)
   }
@@ -50,14 +50,13 @@ router.get('/:id/Artists', (req, res, next) => {
 
 
 //GET ALL THE USER TRACKS INFO (NAME AND IMG)
-router.get('/:id/tracks', (req, res, next) => {
-  const { id } = req.params
+router.get('/:display_name/tracks', (req, res, next) => {
+  const { display_name } = req.params
   let tracks = ''
 
-  spotyUserTracks.find({ spotyId: id })
+  spotyUserTracks.find({ display_name: display_name })
   .then(respuesta => {
     respuesta.map(resp => {
-      console.log(resp.items)
       tracks = resp.items
     })
     res.json(tracks)
