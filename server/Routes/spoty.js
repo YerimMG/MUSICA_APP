@@ -169,8 +169,12 @@ router.get('/callback/', function(req, res) {
                   })
               }
             })
-
-            res.redirect(`http://localhost:3001/Home/?user=${body.display_name}`)
+            console.log(body)
+            UserSpoty.find({ spotyId: body.id })
+            .then(user => {
+            res.redirect(`http://localhost:3001/Home/?user=${user[0].access_token}`)
+          })
+            
         });
        
     } else {

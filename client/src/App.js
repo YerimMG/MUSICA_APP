@@ -12,7 +12,7 @@ import UserContext from './context/getUserSpoty'
 import UserTracksContext from "./context/getUserTracks"
 import UserArtists from './context/getArtist'
 
-//GUARDAR EN LOCAL STORAGE
+//GUARDAR EN LOCALSTORAGE
 let params = new URLSearchParams(window.location.search);
 let user  = params.get('user')
 console.log(user)
