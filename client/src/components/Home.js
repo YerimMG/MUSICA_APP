@@ -4,7 +4,7 @@ import axios from 'axios'
 
 export default function SuccesRoute() {
   const [info, setInfo] = useState('hola')
-
+  
   // useEffect(() => {
   //       //Consultar API
   //       const url = async () => {

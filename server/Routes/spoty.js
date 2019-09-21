@@ -2,18 +2,16 @@
 //Esta esla configuracion inicial de spoty, tambein genera las BBD.
 //Espero hacerlo bien, saludos.
 
-
 const express = require('express');
-const router = express.Router();
+const router  = express.Router();
 const querystring = require('querystring');
 const request     = require('request')
 const SpotyControl = require ('./SpotyControl/spotyFunctions');
-
 const stateKey     = 'spotify_auth_state';
 
 //BBD 
-const UserSpoty  = require('../models/UserSpoty')
-const userTracks = require('../models/userTracks')
+const UserSpoty   = require('../models/UserSpoty')
+const userTracks  = require('../models/userTracks')
 const userArtists = require('../models/userArtists')
 // const FollowedArtsist = require('../models/FollowedArtists')
 
@@ -171,11 +169,10 @@ router.get('/callback/', function(req, res) {
                   })
               }
             })
-            
+
             res.redirect(`http://localhost:3001/Home/?user=${body.display_name}`)
         });
        
-
     } else {
         res.redirect('http://localhost:3001?' +
           querystring.stringify({
@@ -186,7 +183,7 @@ router.get('/callback/', function(req, res) {
   }
 });
 
-  //Refres Token
+//Refres Token
   router.get('/refresh_token', SpotyControl.refresToken);
 
 
