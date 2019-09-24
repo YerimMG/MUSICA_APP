@@ -8,18 +8,19 @@ const querystring = require('querystring');
 const request     = require('request')
 const SpotyControl = require ('./SpotyControl/spotyFunctions');
 const stateKey     = 'spotify_auth_state';
+const redirect_uri = process.env.redirect_uri
 
 //BBD 
 const UserSpoty   = require('../models/UserSpoty')
 const userTracks  = require('../models/userTracks')
 const userArtists = require('../models/userArtists')
-// const FollowedArtsist = require('../models/FollowedArtists')
 
 
 //Solicitud de permisos y generacion del token.
   router.get('/login', SpotyControl.scope);
 
 router.get('/callback/', function(req, res) {
+
   // your application requests refresh and access tokens
   // after checking the state parameter
   var code = req.query.code || null;
@@ -39,7 +40,7 @@ router.get('/callback/', function(req, res) {
       url: 'https://accounts.spotify.com/api/token',
       form: {
         code: code,
-        redirect_uri: 'http://localhost:3000/callback/',
+        redirect_uri,
         grant_type: 'authorization_code'
       },
       headers: {
@@ -64,117 +65,114 @@ router.get('/callback/', function(req, res) {
         };
 
         request.get(userInfo,function(error, response, body) {
+          const userName = body.display_name
+          const userId = body.id
 
+         
           const newUser = new UserSpoty(body)
           newUser.spotyId = body.id    
-          
-          const spotyId = newUser.spotyId
-            UserSpoty.findOne({spotyId})
-            .then(res => {
-              //Si la respuesta es diferente a nulll, solo actualiza el token
-              if( res !== null){
-                UserSpoty.findOneAndUpdate({ _id: res._id }, { access_token  : access_token, refresh_token : refresh_token })
-                .then(user => {
-                  // res.redirect('www.google.com')
-                  // console.log(request)
-                  res.statusCode(400)
-                })
-                .catch(err => console.log(err)) 
-                res.redirect(`http://localhost:3001/Home/?user=${res.display_name}`)
-                //Si la respuesta en null, crea el usuario y genera un id a -
-                //todos los modelos relacionados con la informacion del usuario.
-              } else {
-                  //Genera el modelo con la informacion del usuario
-                  newUser.access_token  = access_token,
-                  newUser.refresh_token = refresh_token
-
-                  newUser.save()
-                  .then(resp => { 
-                    resp.json(resp)
-                  })
-                  .catch(err => console.log(err)) 
-
-                  // //Genera un id a las listas de tracks de los usuarios
-                  const newIdTrack   = new userTracks( body )
-                  newIdTrack.spotyId = body.id
-                  newIdTrack.display_name = body.display_name
-
-                  newIdTrack.save()
-                  .then(resp => {
-                    res.json(resp)
-                  })
-                  .catch(err => console.log(err)) 
-
-                  // //Genera un Id a la lista de artistas de los usuarios
-                  const idArtisit = new userArtists( body )
-                  idArtisit.spotyId = body.id
-                  idArtisit.display_name = body.display_name
-
-                  idArtisit.save()
-                  .then(resp => {
-                    res.json(resp)
-                  })
-                  .catch(err => console.log(err)) 
-
-                  // //Genera un id a los artistas que sigue el usuario.
-                  // const idFollow = new FollowedArtsist(body)
-                  // console.log(body.id, body.display_name)
-                  // idFollow.spotyId = body.id
-                  // idFollow.display_name = body.display_name
-
-                  // idFollow.save()
-                  // .then(resp => {
-                  //   res.json(resp)
-                  // })
-                  // .catch(err => console.log(err)) 
-
-
-                  //GET A USER'S TOP ARTISTS 
-                  var userTopArtists = {
-                    url: 'https://api.spotify.com/v1/me/top/artists?limit=50&offset=0',
-                    headers: { 'Authorization': 'Bearer ' + access_token },
-                    json: true,
-          
-                  };
-                  request.get(userTopArtists, function(error, response, body) {
-          
-                    UserSpoty.find({access_token: access_token})
-                    .then(res => {
-                      console.log(res)
-                        const {display_name} = res[0]
-                        userArtists.findOneAndUpdate({ display_name: display_name}, {items : body.items, 
-                            total : body.total, href : body.href })
-                            .then(resp => console.log(resp))
-                            .catch(err => console.log(err))
+            UserSpoty.findOne({display_name : userName})
+            .then(user => { 
+                //Si la respuesta es diferente a nulll, solo actualiza el token, y los items de los demas modelos
+                if( user !== null){
+                  UserSpoty.findOneAndUpdate({ display_name: userName }, { access_token  : access_token, refresh_token : refresh_token })
+                    .then(user => { 
+                      res.status(400).json(user)
                     })
-                })
-                  //GET A USER'S TOP TRACKS 
-                  var userTopTracks = {
-                    url: 'https://api.spotify.com/v1/me/top/tracks?limit=50&offset=0',
-                    headers: { 'Authorization': 'Bearer ' + access_token },
-                    json: true,
+                    .catch(err => console.log(err)) 
 
-                  };
-                  request.get(userTopTracks, function(error, response, body) {
-                    UserSpoty.find({access_token: access_token})
-                    .then(resp => { 
+                    //UPDATE A USER'S TOP ARTISTS 
+                      var userTopArtists = {
+                        url: 'https://api.spotify.com/v1/me/top/artists?limit=50&offset=0',
+                        headers: { 'Authorization': 'Bearer ' + access_token },
+                        json: true,
+                      };
 
-                        let {display_name} = resp[0]
-                        userTracks.findOneAndUpdate({ display_name: display_name }, { items: body.items , 
-                          total : body.total, href : body.href })
-
-                        .then( resp => res.status(400).json(resp)  )
-                        .catch(err => console.log(err))
+                      request.get(userTopArtists, function(error, response, body) {
+                        const {items} = body
+                        userArtists.findOneAndUpdate( { display_name: userName }, {items: items})
+                          .then( user => {
+                            res.status(400).json(user)
+                          })
+                          .catch( err => {
+                            console.log(err)
+                          })
                       })
-                  })
-              }
+                    //UPDATE A USER'S TOP TRACKS 
+                      var userTopTracks = {
+                        url: 'https://api.spotify.com/v1/me/top/tracks?limit=50&offset=0',
+                        headers: { 'Authorization': 'Bearer ' + access_token },
+                        json: true,
+                      };
+                      request.get(userTopTracks, function(error, response, body) {
+                        const {items} = body
+                        userTracks.findOneAndUpdate({ display_name: userName }, {items: items})
+                          .then (user => {
+                            res.status(400).json(user)
+                          })
+                          .catch(err =>{
+                            console.log(err)
+                          })
+                          
+                      })
+
+                    
+                } else {
+                      //Genera el modelo con la informacion del usuario
+                      newUser.access_token  = access_token,
+                      newUser.refresh_token = refresh_token
+                      newUser.save()
+                      .then(resp => { 
+                        res.json(resp)
+                      })
+                      .catch(err => console.log(err)) 
+
+                     //GET A USER'S TOP ARTISTS 
+                      var userTopArtists = {
+                        url: 'https://api.spotify.com/v1/me/top/artists?limit=50&offset=0',
+                        headers: { 'Authorization': 'Bearer ' + access_token },
+                        json: true,
+                      };
+
+                      request.get(userTopArtists, function(error, response, body) {
+                        const newUserArtists = new userArtists
+                          newUserArtists.display_name = userName
+                          newUserArtists.spotyId      = userId
+                          newUserArtists.items        = body.items
+                          newUserArtists.total        = body.total
+                          newUserArtists.href         = body.href
+                          newUserArtists.limit        = body.limit
+
+                        newUserArtists.save()
+                        .then(model => {
+                          res.json(model)
+                        })
+                        .catch( err => console.log(err))
+                      })
+                    
+                     //GET A USER'S TOP TRACKS 
+                      var userTopTracks = {
+                        url: 'https://api.spotify.com/v1/me/top/tracks?limit=50&offset=0',
+                        headers: { 'Authorization': 'Bearer ' + access_token },
+                        json: true,
+                      };
+                      request.get(userTopTracks, function(error, response, body) {
+                        const newUserTracks = new userTracks
+                          newUserTracks.items   = body.items
+                          newUserTracks.total   = body.total
+                          newUserTracks.spotyId = userId
+                          newUserTracks.href    = body.href
+                          newUserTracks.display_name = userName
+
+                          newUserTracks.save()
+                          .then(model => {
+                            res.json(model)
+                          })
+                          .catch(err => console.log(err))
+                      })
+                }
             })
-            console.log(body)
-            UserSpoty.find({ spotyId: body.id })
-            .then(user => {
-            res.redirect(`http://localhost:3001/Home/?user=${user[0].access_token}`)
-          })
-            
+          res.redirect(`http://localhost:3001/Home/?token=${access_token}`)
         });
        
     } else {
@@ -192,4 +190,10 @@ router.get('/callback/', function(req, res) {
 
 
 module.exports = router;
+
+
+
+
+
+
 

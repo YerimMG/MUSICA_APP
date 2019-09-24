@@ -16,9 +16,6 @@ useEffect(() => {
 
 });
 
-const hola = () => {
-  console.log("hola")
-}
 
 
   return (

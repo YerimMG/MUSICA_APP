@@ -1,25 +1,35 @@
 import React, {useEffect, useState} from 'react'
 import axios from 'axios'
-
+//COMPONENTES
+import ConertsTM from './ListConertsTM'
 
 export default function SuccesRoute() {
-  const [info, setInfo] = useState('hola')
-  
-  // useEffect(() => {
-  //       //Consultar API
-  //       const url = async () => {
-  //       const res = await axios.get( 'https://accounts.spotify.com/api/token')
-  //       //Actualiza el State
-  //       setInfo(res.data)
-  //       console.log(res)
-  //       }
-  //       url()
-  //       console.log(info)
-  // });
+  const [ userInfo, setUserInfo ] = useState([])
 
+
+
+
+  useEffect( () => {
+    //Obtener Token
+      let params = new URLSearchParams(window.location.search);
+      let tokenUser  = params.get('token')
+    //Guardar en Local Storage
+      localStorage.setItem('tokenUser', JSON.stringify(tokenUser))
+    //obtener token del localStorage
+      let token = JSON.parse(localStorage.getItem('tokenUser'))
+    //Consultar api info del usuario
+      const url = async () =>{
+        const res = await axios.get(`http://localhost:3000/info/${token}`)
+        setUserInfo(res.data[0])
+      }
+      url()
+  }, [])
+
+  
   return (
     <div>
-      <h1> HOME!!! </h1>
+      <h1> Bienvenido {userInfo.display_name}!!</h1>
+      <ConertsTM/>
     </div>
   )
 }
