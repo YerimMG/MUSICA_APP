@@ -1,7 +1,9 @@
+//Este es el componente que tiene la informacion del usuario, NavBar y Footer
+
 import React, {useEffect, useState} from 'react'
 import axios from 'axios'
 //COMPONENTES
-import ConertsTM from './ListConertsTM'
+import ComponentePrincipal from '../components/ComponentePrincipal'
 
 export default function SuccesRoute() {
   const [ userInfo, setUserInfo ] = useState([])
@@ -20,16 +22,23 @@ export default function SuccesRoute() {
     //Consultar api info del usuario
       const url = async () =>{
         const res = await axios.get(`http://localhost:3000/info/${token}`)
-        setUserInfo(res.data[0])
+        try {
+          setUserInfo(res.data[0])
+        }
+        catch(err) {
+          console.log(err)
+        }
       }
       url()
   }, [])
-
   
   return (
     <div>
       <h1> Bienvenido {userInfo.display_name}!!</h1>
-      <ConertsTM/>
+      <ComponentePrincipal
+      userInfo = {userInfo}
+      />
     </div>
   )
 }
+

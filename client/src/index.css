@@ -4,7 +4,10 @@ body {
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+	-moz-osx-font-smoothing: grayscale;
+	background-image: url('./images/serviceWorker3.jpg');
+	background-color: #cccccc;
+	color: white;
 }
 /*--------------------------------
 
@@ -47,3 +50,4 @@ POSICION DE LOS BOTONES DE SPOTY
 	flex: 0 1 auto;
 	align-self: auto;
 }
+
