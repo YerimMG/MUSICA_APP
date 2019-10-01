@@ -1,13 +1,14 @@
-body {
+body, html {
   margin: 0;
   font-family: 'Roboto Condensed', sans-serif, "Segoe UI", "Roboto", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
-	background-image: url('./images/serviceWorker3.jpg');
-	background-color: #cccccc;
+	background-color: black;
 	color: white;
+	height: 100%;
+	
 }
 /*--------------------------------
 
@@ -43,11 +44,93 @@ POSICION DE LOS BOTONES DE SPOTY
 	justify-content: center;
 	align-content: flex-start;
 	align-items: center;
+	padding: 1em;	
 }
 
 .spotyButton{
 	order: 0;
 	flex: 0 1 auto;
 	align-self: auto;
+}
+/*--------------------------------
+
+POSICION DEL HOME  
+
+---------------------------------*/
+
+.parent {
+	display:flex;	
+  flex-direction: row;
+  min-height:100%;
+	}
+
+.parent > div {
+		flex:1;
+  	display:flex;
+	}
+
+/*--------------------------------
+STYLE HOME
+---------------------------------*/
+.left{
+	background-image: url('./images/giphy.gif');
+	background-repeat: no-repeat;
+	background-size: cover;
+	padding: 1em;
+	flex-direction: column;
+	align-items: center;
+	font-size: 2.23em;	
+
+}
+.right{
+	background-image: url('./images/lightshow-music-concert-wallpaper-preview.jpg');
+	filter: grayscale(50%);
+	background-repeat: no-repeat;
+	background-size: cover;	
+	padding: 1em;
+	font-size: 1.9em;	
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-end;
+}
+/*--------------------------------
+
+LOGIN 
+
+---------------------------------*/
+.home{
+	padding: .1em 2em;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: space-between;
+	align-content: center;
+	align-items: flex-start;
+}
+.title-home{
+	font-size: 5em;
+	order: 0;
+	flex: 0 1 auto;
+	align-self:center;
+}
+
+
+.home > img{
+	width: 15em;
+	padding: .1em 1.5em;
+	flex: 0 1 auto;
+	align-self: center
+}
+/*--------------------------------
+
+Tu top 10 de artistas
+
+---------------------------------*/
+.componentePrincipal{
+	padding: .1em 2em;
+	font-size: 2em;
+}
+.card{
+	border: red;
 }
 

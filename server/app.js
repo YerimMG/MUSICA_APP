@@ -11,13 +11,13 @@ const logger      = require('morgan');
 const path        = require('path');
 
 const app           = express();
-const PORT          = process.env.PORT
+const PORT          = process.env.PORT || 3000
 
 
 //ROUTES
-const Home     = require('./Routes/Home')
-const SpotyLogin = require('./Routes/spoty')
-const info = require('./Routes/info')
+const ticketMaster = require('./Routes/getTM')
+const SpotyLogin   = require('./Routes/spoty')
+const info         = require('./Routes/info')
 
 // CONNECTION TO MONGO 
 const name = "MUSICAPP"
@@ -50,7 +50,7 @@ app.use((req, res, next) => {
 });
 
 //ROUTES
-app.use('/home', Home)
+app.use('/ticketMaster', ticketMaster)
 app.use('/', SpotyLogin)
 app.use('/info', info)
 

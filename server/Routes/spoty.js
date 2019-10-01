@@ -9,18 +9,20 @@ const request     = require('request')
 const SpotyControl = require ('./SpotyControl/spotyFunctions');
 const stateKey     = 'spotify_auth_state';
 const redirect_uri = process.env.redirect_uri
+const axios   = require('axios')
 
 //BBD 
 const UserSpoty   = require('../models/UserSpoty')
 const userTracks  = require('../models/userTracks')
 const userArtists = require('../models/userArtists')
+const Events      = require('../models/Events')
 
 
 //Solicitud de permisos y generacion del token.
   router.get('/login', SpotyControl.scope);
 
-router.get('/callback/', function(req, res) {
-
+//Spoty URL redirec
+  router.get('/callback/', function(req, res) {
   // your application requests refresh and access tokens
   // after checking the state parameter
   var code = req.query.code || null;
@@ -67,7 +69,7 @@ router.get('/callback/', function(req, res) {
         request.get(userInfo,function(error, response, body) {
           const userName = body.display_name
           const userId = body.id
-
+          let nombresArtistas = {}
          
           const newUser = new UserSpoty(body)
           newUser.spotyId = body.id    
@@ -79,7 +81,7 @@ router.get('/callback/', function(req, res) {
                     .then(user => { 
                       res.status(400).json(user)
                     })
-                    .catch(err => console.log(err)) 
+                    .catch(err => res.status(404).send('Model Not Found'))
 
                     //UPDATE A USER'S TOP ARTISTS 
                       var userTopArtists = {
@@ -87,16 +89,13 @@ router.get('/callback/', function(req, res) {
                         headers: { 'Authorization': 'Bearer ' + access_token },
                         json: true,
                       };
-
                       request.get(userTopArtists, function(error, response, body) {
                         const {items} = body
                         userArtists.findOneAndUpdate( { display_name: userName }, {items: items})
                           .then( user => {
                             res.status(400).json(user)
                           })
-                          .catch( err => {
-                            console.log(err)
-                          })
+                          .catch(err => res.status(404).send('Model Not Found'))
                       })
                     //UPDATE A USER'S TOP TRACKS 
                       var userTopTracks = {
@@ -110,12 +109,16 @@ router.get('/callback/', function(req, res) {
                           .then (user => {
                             res.status(400).json(user)
                           })
-                          .catch(err =>{
-                            console.log(err)
-                          })
+                          .catch(err => res.status(404).send('Model Not Found'))
                           
                       })
 
+                      //UPDATE TOKEN EVENTS USER
+                        Events.findOneAndUpdate({ display_name: userName }, {access_token: access_token})
+                        .then (user => {
+                          res.status(400).json(user)
+                        })
+                        .catch(err => res.status(404).send('Model Not Found'))
                     
                 } else {
                       //Genera el modelo con la informacion del usuario
@@ -124,8 +127,9 @@ router.get('/callback/', function(req, res) {
                       newUser.save()
                       .then(resp => { 
                         res.json(resp)
+                        
                       })
-                      .catch(err => console.log(err)) 
+                      .catch(err => res.status(404).send('Model Not Found'))
 
                      //GET A USER'S TOP ARTISTS 
                       var userTopArtists = {
@@ -143,11 +147,64 @@ router.get('/callback/', function(req, res) {
                           newUserArtists.href         = body.href
                           newUserArtists.limit        = body.limit
 
+                          const newEvents = new Events
+                          newEvents.display_name = userName
+                          newEvents.spotyId      = userId
+                          newEvents.spotyId      = userId
+                          newEvents.access_token = access_token
+                          newEvents.save()
+                          .then(userSaved => {
+                            res.json(userSaved)
+                          })
+                          .catch(err => res.status(404).send('smt went wrong'))
+
+                          nombresArtistas  = body.items
+                          const names = []
+
+                          nombresArtistas.forEach(respuesta => {
+                            names.push(respuesta.name)
+                          })
+
+                         names.map(  (response, index) => {
+                          let wordNormalize = response.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+                          let nameWhitNoSpaces =  wordNormalize.split(' ').join('+')
+                        
+                           setTimeout( async () => {
+                            const url =  `https://app.ticketmaster.com/discovery/v2/events?apikey=8vC67wFZzHEalRTSX6GFZAWcUGeYFAOD&keyword=${nameWhitNoSpaces}&locale=*&countryCode=MX`
+                            let res = await axios.get(url)
+                            
+                            const info = res.data
+
+                            
+                            Events.find({display_name: userName})
+                            .then(user => {
+                              if (user === null){
+                                return 
+                              }else {
+                                Events.update({display_name: userName},
+                                  {$push: {events: info}})
+                                  .then(respuesta => {
+                                    res.status(200).send('ok')
+                                  })
+                                  .catch(err => res.status(404).send('smt went wrong'))
+                              return
+                              }
+                            })
+                            
+       
+                            
+                          }, 0750 * index)
+                          
+                        })
+
+                        
+                          
+   
                         newUserArtists.save()
                         .then(model => {
                           res.json(model)
                         })
-                        .catch( err => console.log(err))
+                        .catch(err => res.status(404).send('Model Not Found'))
                       })
                     
                      //GET A USER'S TOP TRACKS 
@@ -168,8 +225,11 @@ router.get('/callback/', function(req, res) {
                           .then(model => {
                             res.json(model)
                           })
-                          .catch(err => console.log(err))
-                      })
+                          .catch(err => res.status(404).send('Model Not Found'))
+                      })  
+                      
+    
+
                 }
             })
           res.redirect(`http://localhost:3001/Home/?token=${access_token}`)

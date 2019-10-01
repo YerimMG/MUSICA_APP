@@ -1,169 +1,83 @@
-// import React, {useState, useEffect} from 'react'
-// import axios from 'axios'
 
-
-// //Componentes 
-// import ConcertsByArtists from './concertsByArtists'
-
-// export default function SuccesRoute({userInfo}) {
-
-//   // const UserInfo = userInfo.userInfo
-
-//   //All the user Artists
-//   const [ userArtists, setUserArtist] = useState([])
-//   //All the user Tracks
-//   const [ userTracks, setUsertraks  ] = useState([])
-//   //top 10 artists
-//   const [ topTenArtists, setTopTenArt  ] = useState([])
-//   //top 10 songs
-//   const [ topTenSongs, setTopSongs  ] = useState([])
-//   //get genres
-//   const [ genres, setGenres  ] = useState([])
-
-//     //Obtener Token
-//     let params = new URLSearchParams(window.location.search);
-//     let tokenUser  = params.get('token')
-//   //Guardar en Local Storage
-//     localStorage.setItem('tokenUser', JSON.stringify(tokenUser))
-//   //obtener token del localStorage
-//     let token = JSON.parse(localStorage.getItem('tokenUser'))
-
-//   //Consultar api's
-//     const urlArtists = async () =>{
-//         const res = await axios.get(`http://localhost:3000/info/${token}/Artists`);
-//         const allInfo = await res.data[0].items;
-//         const arr = allInfo.map(res =>{
-//           return {name: res.name, images: res.images}
-//         }); 
-//       setUserArtist(arr)
-//         //get top ten
-//           const topTen = await arr.slice(0,10);
-//           setTopTenArt(topTen);
-//         //get genres
-//           const allGenres = allInfo.map(resp => { 
-//             return resp.genres
-//           })  
-        
-//           const genresArr = allGenres.flat(1)
-//           const filterGenders = [...new Set(genresArr)]
-//           setGenres(filterGenders)
-
-//           const tracks = await axios.get(`http://localhost:3000/info/${token}/tracks`);
-//           const getInfo = await tracks.data.items;
-//           const array = getInfo.map(res =>{
-//             return  res.name
-//           });      
-//         setUsertraks(array)
-//         //Get top ten Songs
-//           const topten = array.slice(0,10);
-//           setTopSongs(topten)
-//     }
-
-//  useEffect( () => {
-//       urlArtists()
-//   }, [])
-
-
-
-//     return (
-//       <div>
-//         <h2> Estos son los conciertos que te pueden interesar</h2 >
-//           <p>Tu top 10 de artistas: </p>
-//             <ul>
-//               {topTenArtists.map((resp, i) => 
-//                 <li key={i}>{resp.name}</li>
-//               )}
-//             </ul>
-//             <p>Tu top 10 de canciones: </p>
-//             <ul>
-//               {topTenSongs.map((resp, i) => 
-//                 <li key={i}>{resp}</li>
-//               )}
-//             </ul>
-//             <h4>conciertos por artista </h4>
-//             <ConcertsByArtists userArtists = {userArtists}/>
-//             <p>conciertos por genero </p>
-//       </div>
-//     )
-// }
-
-
-import React, { Component } from 'react'
+import React, {useState, useEffect, Fragment} from 'react'
 import axios from 'axios'
+
+
+//Componentes 
 import ConcertsByArtists from './concertsByArtists'
+import Artista from './Artista'
+import Cancion from './Cancion'
 
+export default function SuccesRoute({userInfo, token}) {
+  //All the user Artists
+  const [ userArtists, setUserArtist] = useState([])
+  //All the user Tracks
+  const [ userTracks, setUsertraks  ] = useState([])
 
+     //Consultar api's
+       const urlArtists = async () =>{
+        const res = await axios.get(`http://localhost:3000/info/${token}/Artists`);
+        const allInfo = await res.data[0].items;
+        const arr = allInfo.map(res =>{
+          return {name: res.name, images: res.images}
 
-export class ComponentePrincipal extends Component {
-  state ={
-    userArtists: [{
-      name:   '',
-      images: [],
-    }],
-    userTracks: []
-}
-
-componentDidMount() {
-  //Obtener Token
-    let params = new URLSearchParams(window.location.search);
-    let tokenUser  = params.get('token')
-  //Guardar en Local Storage
-    localStorage.setItem('tokenUser', JSON.stringify(tokenUser))
-  //obtener token del localStorage
-    let token = JSON.parse(localStorage.getItem('tokenUser'))
-
-    const getApi = async () => {
-      const res = await axios.get(`http://localhost:3000/info/${token}/Artists`);
-      
-      const allInfo = await res.data[0].items;
-      const arr = allInfo.map(res =>{
-        return {name: res.name, images: res.images}
-      }); 
-      this.setState({
-        userArtists: arr
-      })
-
-
-      const tracks = await axios.get(`http://localhost:3000/info/${token}/tracks`);
-        const getInfo = await tracks.data.items;
-        const array =  getInfo.map(res =>{
-          return  res.name
-        });
-        this.setState({
-          userTracks: array
-        })
+        }); 
+        setUserArtist(arr)
       }
+
+      const getUserTracks = async () => {
+        const tracks = await axios.get(`http://localhost:3000/info/${token}/tracks`);
+        const getInfo = await tracks.data.items;
+        const array = getInfo.map(res =>{
+        const authors = res.artists.map(res => {
+            return res
+          })
+          return {songName: res.name, 
+                  album: res.album.name, 
+                  images: res.album.images, 
+                  albumURL: res.album.external_urls.spotify, 
+                  songURL: res.external_urls.spotify,
+                  authors: authors
+                 }
+        });      
+        setUsertraks(array)
+      }
+
+      // EJECUTAR APIS
+      useEffect( () => {
+          if (userArtists === undefined || userTracks === undefined){
+            window.location.reload()
+          }
+            urlArtists()
+            getUserTracks()
+        }, [   ])
         
-    getApi()
-  }
-  
-
-
-
-  render() {  
-    
-    // console.log(this.state)
     return (
-      <div>
-         <h2> Estos son los conciertos que te pueden interesar</h2 >
-          <p>Tu top 10 de artistas: </p>
-            <ul>
-               {this.state.userArtists.slice(0,10).map((resp, i) => 
-                <li key={i}>{resp.name}</li>
-              )}
-            </ul>
-            <p>Tu top 10 de canciones: </p>
-            {/* <ul>
-              {topTenSongs.map((resp, i) => 
-                <li key={i}>{resp}</li> 
-              )}
-            </ul> */}
-            <h4>conciertos por artista </h4>
-            <ConcertsByArtists userArtists = {this.state.userArtists}/>
-            <p>conciertos por genero </p>
-      </div>
-    )
-  }
-}
+      <Fragment>
+      <div className="componentePrincipal">
+        <div className="container">
+          <h2>{userInfo.display_name}, tus MÚSICOS favoritos son! </h2>
+            {userArtists.slice(0,10).map((resp, i) => 
+              <Artista key ={i} artista={resp}></Artista>
+            )}
+        </div>
 
-export default ComponentePrincipal
+            <h2>Tus Canciones favoritas! </h2>
+            <h3>
+              Da click en la portada del álbum para descubrir mas canciones o
+              en el nombre de la cancion para escucharla directamente en spotify!
+            </h3>
+
+              {userTracks.slice(0,10).map((resp, i) => 
+                 <Cancion key={i} cancionInfo = {resp}/>
+              )}
+          
+           
+            <h2>conciertos por artista </h2>
+            <ConcertsByArtists userArtists = {userArtists}/>
+           
+      </div>
+      </Fragment>
+    )
+}
+  
