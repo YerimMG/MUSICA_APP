@@ -1,6 +1,7 @@
 //Este es el componente que tiene la informacion del usuario, NavBar y Footer
 
 import React, {useEffect, useState, Fragment} from 'react'
+import { Redirect } from 'react-router-dom'
 import axios from 'axios'
 import Logo from '../images/musicAPP-08.png'
 //COMPONENTES
@@ -26,14 +27,13 @@ export default function SuccesRoute() {
     }
     //Consultar api info del usuario
       const urls = async () =>{
-        const res = await axios.get(`http://localhost:3000/info/${token}`)
         try {
+          const res = await axios.get(`http://localhost:3000/info/${token}`)
           setUserInfo(res.data[0]) 
           setUserInfoI(res.data[0].images[0].url)
         }
         catch(err) {
-          console.log(err)
-        }
+          return <Redirect to='/login'/>;        }
       }
       urls()
   }, [  ])

@@ -1,5 +1,7 @@
 
 import React, {useState, useEffect, Fragment} from 'react'
+import { Redirect } from 'react-router-dom'
+
 import axios from 'axios'
 
 
@@ -16,31 +18,42 @@ export default function SuccesRoute({userInfo, token}) {
 
      //Consultar api's
        const urlArtists = async () =>{
-        const res = await axios.get(`http://localhost:3000/info/${token}/Artists`);
-        const allInfo = await res.data[0].items;
-        const arr = allInfo.map(res =>{
-          return {name: res.name, images: res.images}
+         try {
+          const res = await axios.get(`http://localhost:3000/info/${token}/Artists`);
+          const allInfo = await res.data[0].items;
+          const arr = allInfo.map(res =>{
+            return {name: res.name, images: res.images}
+  
+          }); 
+          setUserArtist(arr)
+         } catch (error) {
+           return <Redirect to='/login'/>;
 
-        }); 
-        setUserArtist(arr)
+         }
+        
       }
 
       const getUserTracks = async () => {
-        const tracks = await axios.get(`http://localhost:3000/info/${token}/tracks`);
-        const getInfo = await tracks.data.items;
-        const array = getInfo.map(res =>{
-        const authors = res.artists.map(res => {
-            return res
-          })
-          return {songName: res.name, 
-                  album: res.album.name, 
-                  images: res.album.images, 
-                  albumURL: res.album.external_urls.spotify, 
-                  songURL: res.external_urls.spotify,
-                  authors: authors
-                 }
-        });      
-        setUsertraks(array)
+        try {
+          const tracks = await axios.get(`http://localhost:3000/info/${token}/tracks`);
+          const getInfo = await tracks.data.items;
+          const array = getInfo.map(res =>{
+          const authors = res.artists.map(res => {
+              return res
+            })
+            return {songName: res.name, 
+                    album: res.album.name, 
+                    images: res.album.images, 
+                    albumURL: res.album.external_urls.spotify, 
+                    songURL: res.external_urls.spotify,
+                    authors: authors
+                   }
+          });       
+          setUsertraks(array)
+        } catch (error) {
+          return <Redirect to='/login'/>;
+        }
+
       }
 
       // EJECUTAR APIS
@@ -74,7 +87,8 @@ export default function SuccesRoute({userInfo, token}) {
           
            
             <h2>conciertos por artista </h2>
-            <ConcertsByArtists userArtists = {userArtists}/>
+            <ConcertsByArtists userArtists = {userArtists}
+            token= {token}/>
            
       </div>
       </Fragment>

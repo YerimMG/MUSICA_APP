@@ -170,7 +170,7 @@ const Events      = require('../models/Events')
                           let nameWhitNoSpaces =  wordNormalize.split(' ').join('+')
                         
                            setTimeout( async () => {
-                            const url =  `https://app.ticketmaster.com/discovery/v2/events?apikey=8vC67wFZzHEalRTSX6GFZAWcUGeYFAOD&keyword=${nameWhitNoSpaces}&locale=*&countryCode=MX`
+                            const url =  `https://app.ticketmaster.com/discovery/v2/events?apikey=${process.env.Client_IDTM}&keyword=${nameWhitNoSpaces}&locale=*&countryCode=MX`
                             let res = await axios.get(url)
                             
                             const info = res.data
@@ -181,25 +181,21 @@ const Events      = require('../models/Events')
                               if (user === null){
                                 return 
                               }else {
-                                Events.update({display_name: userName},
-                                  {$push: {events: info}})
+                                if (info._embedded !== undefined){
+                                    Events.update({display_name: userName},
+                                  {$push: {events: info._embedded}})
                                   .then(respuesta => {
                                     res.status(200).send('ok')
                                   })
                                   .catch(err => res.status(404).send('smt went wrong'))
+                                }else {
+                                  return
+                                }
                               return
                               }
                             })
-                            
-       
-                            
                           }, 0750 * index)
-                          
                         })
-
-                        
-                          
-   
                         newUserArtists.save()
                         .then(model => {
                           res.json(model)

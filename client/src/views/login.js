@@ -21,7 +21,7 @@ useEffect(() => {
   setInterval(() => {
     var item = array[Math.floor(Math.random()*array.length)]; 
     setImage(item)
-  },5000)
+  },3000)
 }, [])
   
  
