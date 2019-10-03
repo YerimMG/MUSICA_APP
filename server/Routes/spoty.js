@@ -17,7 +17,6 @@ const userTracks  = require('../models/userTracks')
 const userArtists = require('../models/userArtists')
 const Events      = require('../models/Events')
 
-
 //Solicitud de permisos y generacion del token.
   router.get('/login', SpotyControl.scope);
 
@@ -33,7 +32,6 @@ const Events      = require('../models/Events')
     res.redirect('/#' +
       querystring.stringify({
         error: 'state_mismatch'
-
       }));
   } else {
 
@@ -65,7 +63,6 @@ const Events      = require('../models/Events')
           json: true,
 
         };
-
         request.get(userInfo,function(error, response, body) {
           const userName = body.display_name
           const userId = body.id
@@ -110,7 +107,6 @@ const Events      = require('../models/Events')
                             res.status(400).json(user)
                           })
                           .catch(err => res.status(404).send('Model Not Found'))
-                          
                       })
 
                       //UPDATE TOKEN EVENTS USER
@@ -119,7 +115,6 @@ const Events      = require('../models/Events')
                           res.status(400).json(user)
                         })
                         .catch(err => res.status(404).send('Model Not Found'))
-                    
                 } else {
                       //Genera el modelo con la informacion del usuario
                       newUser.access_token  = access_token,
@@ -131,7 +126,7 @@ const Events      = require('../models/Events')
                       })
                       .catch(err => res.status(404).send('Model Not Found'))
 
-                     //GET A USER'S TOP ARTISTS 
+                     //GET A USER'S TOP ARTISTS AND CONCERTS FROM TM
                       var userTopArtists = {
                         url: 'https://api.spotify.com/v1/me/top/artists?limit=50&offset=0',
                         headers: { 'Authorization': 'Bearer ' + access_token },
@@ -174,8 +169,7 @@ const Events      = require('../models/Events')
                             let res = await axios.get(url)
                             
                             const info = res.data
-
-                            
+                                                  
                             Events.find({display_name: userName})
                             .then(user => {
                               if (user === null){
@@ -183,11 +177,11 @@ const Events      = require('../models/Events')
                               }else {
                                 if (info._embedded !== undefined){
                                     Events.update({display_name: userName},
-                                  {$push: {events: info._embedded}})
-                                  .then(respuesta => {
-                                    res.status(200).send('ok')
-                                  })
-                                  .catch(err => res.status(404).send('smt went wrong'))
+                                    {$push: {events: { events: info._embedded, name: response }} })
+                                      .then(respuesta => {
+                                        console.log(respuesta)
+                                      })
+                                    .catch(err => console.log(err))
                                 }else {
                                   return
                                 }
@@ -223,9 +217,6 @@ const Events      = require('../models/Events')
                           })
                           .catch(err => res.status(404).send('Model Not Found'))
                       })  
-                      
-    
-
                 }
             })
           res.redirect(`http://localhost:3001/Home/?token=${access_token}`)
@@ -243,7 +234,6 @@ const Events      = require('../models/Events')
 
 //Refres Token
   router.get('/refresh_token', SpotyControl.refresToken);
-
 
 module.exports = router;
 

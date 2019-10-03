@@ -17,7 +17,6 @@ export default function SuccesRoute() {
       let token = JSON.parse(localStorage.getItem('tokenUser'))
 
   const [ userInfo, setUserInfo ] = useState([])
-  const [ userInfoi, setUserInfoI ] = useState([])
 
 
 
@@ -30,26 +29,31 @@ export default function SuccesRoute() {
         try {
           const res = await axios.get(`http://localhost:3000/info/${token}`)
           setUserInfo(res.data[0]) 
-          setUserInfoI(res.data[0].images[0].url)
+       
         }
         catch(err) {
           return <Redirect to='/login'/>;        }
       }
       urls()
-  }, [  ])
+  }, [ userInfo ])
 
   return (
     <Fragment>
-    <div className='home'>  
-      <h1 className='title-home'> Hola {userInfo.display_name}!!</h1>
-      <img src={Logo} alt=""/>
-    </div>
+      <div className='home'>  
 
-      <ComponentePrincipal
-      userInfo = {userInfo}
-      token = {token}
-      />
+        <div className='header' >
+          <h1 > Hola {userInfo.display_name}!!</h1>
+          <img src={Logo} alt=""/>
+        </div>
+ 
+      
+        
+          <ComponentePrincipal
+          userInfo = {userInfo}
+          token = {token}
+          />
 
+      </div>
     </Fragment>
 
   )

@@ -22,32 +22,42 @@ useEffect(() => {
     var item = array[Math.floor(Math.random()*array.length)]; 
     setImage(item)
   },3000)
-}, [])
+}, [  ])
   
  
   return (
     <Fragment>
-     <div className='parent'>
-        <div  className='left' >
+     <div className='columns parent'>
+
+        <div  className='left column' >
+         
           <h1>MUSICAPP</h1>
           <img src={Logo} alt=""/>
           <h3>
           Bienvenido a la plataforma perfecta para 
           consultar conciertos que solo a ti te interesan!
           </h3>
-          <containter className='spotyButtons'>
+          <div className='spotyButtons'>
           <a type="button" href="http://localhost:3000/login" className="spotyButton secondary"><i className="fab fa-spotify"></i> INICIAR SESIÓN CON SPOTIFY</a>
           <a type="button" href="http://localhost:3000/login" className="spotyButton primary"><i className="fab fa-spotify"></i> REGÍSTRATE CON SPOTIFY</a>
-          </containter>
-        </div>
+          </div>
+      
+      </div>
 
-        <div className='right' >
-        <img src={Logo2} alt=""/>
-          <h1>
-          {image.frase}
-          </h1>
-          <p>"{image.author}"</p>
+
+        <div className=' right column' >
+
+            
+            < img src={Logo2} alt=""/>
+            <div className="author">
+              <h1>{image.frase}</h1>
+              <p>"{image.author}"</p>
+            </div>
+
         </div>
+        
+        
+        
     </div>
 
     </Fragment>

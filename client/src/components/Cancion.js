@@ -7,15 +7,36 @@ export default function Cancion({cancionInfo}) {
   })
 
   return (
-    <div>
-      <a href={albumURL}>
-      <img alt={songName} src={images[1].url} />
-      </a>
-      <p><a href={songURL}>{songName}</a>, del album {album}{
-        authorsNames.map((res, i) => {
-             return `, ${res}`
-        })
-        }</p>
-    </div>
+
+<div className=" cardSong card column">
+ <div className="card-image ">
+   <img src={images[1].url}  alt={songName}/>
+  </div>
+  <h4 className="title has-text-white is-Roboto Condensed">{songName}</h4>
+  <h5 className="title has-text-white is-Roboto Condensed is-size-6 ">Album: {album}</h5>
+  
+  <div className="card-footer ">
+        <div className="botones">
+        {
+    authorsNames.forEach( e => {
+      return console.log
+
+    })
+  }
+        <a className="button is-success" href={albumURL}> Descubrir el Álbum</a>
+        <a className="button is-success" href={songURL}> Escuchar la Canción</a>
+       
+        </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
   )
 }

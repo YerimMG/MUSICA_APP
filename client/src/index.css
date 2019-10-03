@@ -59,14 +59,15 @@ POSICION DEL HOME
 ---------------------------------*/
 
 .parent {
-	display:flex;	
+	display:flex;
   flex-direction: row;
   min-height:100%;
 	}
 
 .parent > div {
 		flex:1;
-  	display:flex;
+		display:flex;
+		align-items: center;
 	}
 
 /*--------------------------------
@@ -79,58 +80,196 @@ STYLE HOME
 	padding: 1em;
 	flex-direction: column;
 	align-items: center;
-	font-size: 2.23em;	
+	font-size: 3.1em;	
 
 }
 .right{
 	background-image: url('./images/lightshow-music-concert-wallpaper-preview.jpg');
-	filter: grayscale(50%);
 	background-repeat: no-repeat;
 	background-size: cover;	
 	padding: 1em;
-	font-size: 1.9em;	
 	flex-direction: column;
 	align-items: center;
-	justify-content: flex-end;
+	justify-content: space-around;
+}
+
+.author	{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	font-size: 2em;	
 }
 /*--------------------------------
 
-LOGIN 
+HOME 
 
 ---------------------------------*/
 .home{
 	padding: .1em 2em;
 	display: flex;
-	flex-direction: row;
-	flex-wrap: nowrap;
+	flex-direction: column;
+	flex-wrap: wrap;
 	justify-content: space-between;
-	align-content: center;
-	align-items: flex-start;
 }
-.title-home{
-	font-size: 5em;
-	order: 0;
-	flex: 0 1 auto;
-	align-self:center;
-}
+.header{
+		font-size: 7em;
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: center;
+		padding: .1em;
+	}
 
-
-.home > img{
-	width: 15em;
-	padding: .1em 1.5em;
-	flex: 0 1 auto;
-	align-self: center
-}
+	.header > img{
+		width: 3em;
+	}
+	hr {
+		height: .1em;
+		width: 40%;
+		background-color: blue;
+	}
 /*--------------------------------
 
-Tu top 10 de artistas
+COMPONENTE PRINCIPAL
 
 ---------------------------------*/
 .componentePrincipal{
-	padding: .1em 2em;
+	padding: 0em 1em;
+	font-size: 2em;
+	display: flex;
+	flex-direction: column;
+}
+ h2 {
 	font-size: 2em;
 }
-.card{
-	border: red;
+
+/*--------------------------------
+
+ARTISTAS FAVORITOS
+
+---------------------------------*/
+
+.favMusics{
+	display: flex;
+	flex-direction: column;
+}
+.ListCards{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+	justify-content: space-around;
+  align-content: center;
+  align-items: center;
 }
 
+.card{
+	font-family: 'Roboto Condensed';
+	flex: 0 1 auto;
+	align-self: auto;
+	background-color: black;
+
+}
+
+/*--------------------------------
+
+CANCIONES FAVORITAS
+
+---------------------------------*/
+ .cancionesFavs{
+	display: flex;
+	flex-direction: column;
+}
+.songListCards{
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: space-around;
+	align-content: auto;
+	align-items: auto;
+	margin: .5em;
+}
+
+
+.button{
+	flex-direction: row;
+	justify-content: space-between;
+	margin: .5em;
+}
+
+/*--------------------------------
+
+CANCIONES FAVORITAS
+
+---------------------------------*/
+.allPresentacions{
+	display: flex;
+	flex-direction: column;
+}
+/*--------------------------------
+
+CONCERTS TM
+
+---------------------------------*/
+.ArtistPresentacions{
+	color: white;
+	display: flex;
+	flex-direction: column;
+	flex-wrap: wrap;
+	align-content: auto;
+	align-items: auto;
+	margin: .5em;
+	border-style: solid ;
+	border-radius: 15px;
+	border-width: .9px;
+	padding: .5em;
+}
+
+/*--------------------------------
+
+INFO EVENT
+
+---------------------------------*/
+.namePrinc{
+	/* background-color: blueviolet; */
+	font-size: 5em;
+	
+}
+.txtInfo{
+	font-size: .5em;
+	text-justify: newspaper;
+	padding: .3em;
+	font-size: 30px;
+}
+
+.eventInfo{
+	display: flex;
+	flex-direction: row;
+	align-content: auto;
+	align-items: auto;
+	padding: .3em;
+	margin: 5px;
+
+}
+
+.cartel{
+
+
+	display: flex;
+	flex-direction: column;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+	align-content: auto;
+	align-items: center;
+	margin: .3em;
+	list-style:none
+}
+
+.cartel > img {
+	background-color: darkgreen;
+	height: 10em;;
+	width: 10em;
+}
+
+.date{
+	font-size: 20px;
+}

@@ -63,34 +63,43 @@ export default function SuccesRoute({userInfo, token}) {
           }
             urlArtists()
             getUserTracks()
-        }, [   ])
+        }, [  ])
         
     return (
       <Fragment>
-      <div className="componentePrincipal">
-        <div className="container">
-          <h2>{userInfo.display_name}, tus MÚSICOS favoritos son! </h2>
-            {userArtists.slice(0,10).map((resp, i) => 
-              <Artista key ={i} artista={resp}></Artista>
-            )}
-        </div>
+     
+     <div className='componentePrincipal'>
 
-            <h2>Tus Canciones favoritas! </h2>
-            <h3>
-              Da click en la portada del álbum para descubrir mas canciones o
-              en el nombre de la cancion para escucharla directamente en spotify!
-            </h3>
+       <div className='favMusics'>
+          <h2>Tus MÚSICOS Favoritos son! </h2>
 
-              {userTracks.slice(0,10).map((resp, i) => 
+            <div className="ListCards">
+              {userArtists.slice(0,12).map((resp, i) => 
+                <Artista className='columns' key ={i} artista={resp}></Artista>
+              )}
+            </div>
+      </div>
+      
+      <div className='cancionesFavs'>
+        <h2>Tus Canciones Favoritas! </h2>
+              <h3>
+                Da click en la portada del álbum para descubrir mas canciones o
+                en el nombre de la cancion para escucharla directamente en spotify!
+              </h3> 
+            <div className="songListCards">
+           
+              {userTracks.slice(0,12).map((resp, i) => 
                  <Cancion key={i} cancionInfo = {resp}/>
               )}
-          
-           
-            <h2>conciertos por artista </h2>
-            <ConcertsByArtists userArtists = {userArtists}
-            token= {token}/>
-           
+            </div>
       </div>
+      <div className="allPresentacions" >    
+            <h2>Tal vez Estas Presentaciones te Interesan!</h2>
+            <ConcertsByArtists 
+            token= {token}/>
+      </div>   
+    </div>
+  
       </Fragment>
     )
 }
