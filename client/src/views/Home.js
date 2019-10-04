@@ -27,7 +27,7 @@ export default function SuccesRoute() {
     //Consultar api info del usuario
       const urls = async () =>{
         try {
-          const res = await axios.get(`http://localhost:3000/info/${token}`)
+          const res = await axios.get(`https://shielded-crag-67706.herokuapp.com/info/${token}`)
           setUserInfo(res.data[0]) 
        
         }

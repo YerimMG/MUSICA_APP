@@ -38,8 +38,8 @@ useEffect(() => {
           consultar conciertos que solo a ti te interesan!
           </h3>
           <div className='spotyButtons'>
-          <a type="button" href="http://localhost:3000/login" className="spotyButton secondary"><i className="fab fa-spotify"></i> INICIAR SESIÓN CON SPOTIFY</a>
-          <a type="button" href="http://localhost:3000/login" className="spotyButton primary"><i className="fab fa-spotify"></i> REGÍSTRATE CON SPOTIFY</a>
+          <a type="button" href="https://shielded-crag-67706.herokuapp.com/login" className="spotyButton secondary"><i className="fab fa-spotify"></i> INICIAR SESIÓN CON SPOTIFY</a>
+          <a type="button" href="https://shielded-crag-67706.herokuapp.com/login" className="spotyButton primary"><i className="fab fa-spotify"></i> REGÍSTRATE CON SPOTIFY</a>
           </div>
       
       </div>

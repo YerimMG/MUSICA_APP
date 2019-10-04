@@ -8,7 +8,7 @@ body, html {
 	background-color: black;
 	color: white;
 	height: 100%;
-	
+
 }
 /*--------------------------------
 
@@ -167,8 +167,10 @@ ARTISTAS FAVORITOS
 	flex: 0 1 auto;
 	align-self: auto;
 	background-color: black;
+	hyphens: auto;
 
 }
+
 
 /*--------------------------------
 
@@ -272,4 +274,8 @@ INFO EVENT
 
 .date{
 	font-size: 20px;
+}
+
+.describcion{
+	font-size: 15px;
 }

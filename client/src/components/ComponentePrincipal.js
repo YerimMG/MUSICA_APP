@@ -19,7 +19,7 @@ export default function SuccesRoute({userInfo, token}) {
      //Consultar api's
        const urlArtists = async () =>{
          try {
-          const res = await axios.get(`http://localhost:3000/info/${token}/Artists`);
+          const res = await axios.get(`https://shielded-crag-67706.herokuapp.com/info/${token}/Artists`);
           const allInfo = await res.data[0].items;
           const arr = allInfo.map(res =>{
             return {name: res.name, images: res.images}
@@ -35,7 +35,7 @@ export default function SuccesRoute({userInfo, token}) {
 
       const getUserTracks = async () => {
         try {
-          const tracks = await axios.get(`http://localhost:3000/info/${token}/tracks`);
+          const tracks = await axios.get(`https://shielded-crag-67706.herokuapp.com/info/${token}/tracks`);
           const getInfo = await tracks.data.items;
           const array = getInfo.map(res =>{
           const authors = res.artists.map(res => {
@@ -63,7 +63,7 @@ export default function SuccesRoute({userInfo, token}) {
           }
             urlArtists()
             getUserTracks()
-        }, [  ])
+        }, [  urlArtists,   getUserTracks])
         
     return (
       <Fragment>
@@ -82,10 +82,7 @@ export default function SuccesRoute({userInfo, token}) {
       
       <div className='cancionesFavs'>
         <h2>Tus Canciones Favoritas! </h2>
-              <h3>
-                Da click en la portada del álbum para descubrir mas canciones o
-                en el nombre de la cancion para escucharla directamente en spotify!
-              </h3> 
+ 
             <div className="songListCards">
            
               {userTracks.slice(0,12).map((resp, i) => 
