@@ -16,7 +16,7 @@ function App() {
 <Router>
    <Switch>
       <Route exact path = "/Home"   component = {Home} />
-      <Route exact path = "/login"  component = {login}/>
+      <Route exact path = ""  component = {login}/>
     </Switch>
 </Router>
 
