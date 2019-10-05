@@ -21,9 +21,10 @@ const info         = require('./Routes/info')
 
 // CONNECTION TO MONGO 
 const name = "MUSICAPP"
-mongoose.connect(`mongodb://localhost:27017/${name}`, { useNewUrlParser: true })
-    .then(db => console.log(`conected to ${name}`))
-    .catch(err => Console.log(err))
+mongoose.connect(`mongodb://ADMIN:${process.env.SECRET}@cluster0-shard-00-00-qzjeu.mongodb.net:27017,cluster0-shard-00-01-qzjeu.mongodb.net:27017,cluster0-shard-00-02-qzjeu.mongodb.net:27017/MUSICA?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true&w=majority`,{ useNewUrlParser: true })
+    .then(db => console.log(`conected to ${process.env.SECRET}`))
+    .catch(err => console.log(err))
+
 
 //EXPRESS CONFIG
 const app_name = require('./package.json').name;
